@@ -145,6 +145,41 @@ func (g *GitHub) Gather(acc telegraf.Accumulator) error {
 			fields := getFields(repositoryInfo)
 
 			acc.AddFields("github_repository", fields, tags, now)
+
+			// PullRequests
+			pullRequestListOptions := github.PullRequestListOptions{State: "all"}
+			pullRequests, response, err := g.githubClient.PullRequests.List(ctx, owner, repository, &pullRequestListOptions)
+			for _, pullRequest := range pullRequests {
+				pullRequestMap := map[string]interface{}{
+					"ID":        pullRequest.GetID(),
+					"Number":    pullRequest.GetNumber(),
+					"State":     pullRequest.GetState(),
+					"Title":     pullRequest.GetTitle(),
+					"Body":      pullRequest.GetBody(),
+					"CreatedAt": pullRequest.GetCreatedAt().Unix(),
+					"UpdatedAt": pullRequest.GetUpdatedAt().Unix(),
+					"ClosedAt":  pullRequest.GetClosedAt().Unix(),
+					"MergedAt":  pullRequest.GetMergedAt().Unix(),
+					"User":      pullRequest.GetUser().GetID(),
+					"Draft":     pullRequest.GetDraft(),
+				}
+				acc.AddFields("github_pull_requests", pullRequestMap, tags, now)
+			}
+
+			// Commits
+			commitsListOptions := github.CommitsListOptions{}
+			commits, response, err := g.githubClient.Repositories.ListCommits(ctx, owner, repository, &commitsListOptions)
+			for _, commit := range commits {
+				commitsMap := map[string]interface{}{
+					"SHA":         commit.GetSHA(),
+					"Author":      commit.GetAuthor().GetID(),
+					"Committer":   commit.GetCommitter().GetID(),
+					"HTMLURL":     commit.GetHTMLURL(),
+					"URL":         commit.GetURL(),
+					"CommentsURL": commit.GetCommentsURL(),
+				}
+				acc.AddFields("github_commits", commitsMap, tags, now)
+			}
 		}(repository, acc)
 	}
 
