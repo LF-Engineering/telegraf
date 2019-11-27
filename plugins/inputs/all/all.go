@@ -22,6 +22,7 @@ import (
 	_ "github.com/influxdata/telegraf/plugins/inputs/cloud_pubsub"
 	_ "github.com/influxdata/telegraf/plugins/inputs/cloud_pubsub_push"
 	_ "github.com/influxdata/telegraf/plugins/inputs/cloudwatch"
+	_ "github.com/influxdata/telegraf/plugins/inputs/confluence"
 	_ "github.com/influxdata/telegraf/plugins/inputs/conntrack"
 	_ "github.com/influxdata/telegraf/plugins/inputs/consul"
 	_ "github.com/influxdata/telegraf/plugins/inputs/couchbase"
