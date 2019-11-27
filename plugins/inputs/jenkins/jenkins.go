@@ -438,7 +438,6 @@ func gatherJobBuild(jr jobRequest, b *buildResponse, acc telegraf.Accumulator) {
 	fields["duration"] = b.Duration
 	fields["result_code"] = mapResultCode(b.Result)
 
-	fmt.Printf("MyFields: %#v", fields)
 	acc.AddFields(measurementJob, fields, tags, b.GetTimestamp())
 }
 
