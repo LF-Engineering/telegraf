@@ -169,6 +169,30 @@ func (g *GitHub) Gather(acc telegraf.Accumulator) error {
 				panic(err)
 			}
 
+			// User
+			if pullRequest.User != nil {
+				pullRequestFields["user_id"] = pullRequest.User.ID
+				pullRequestFields["user_login"] = pullRequest.User.Login
+				pullRequestFields["user_name"] = pullRequest.User.Name
+				pullRequestFields["user_avatar_url"] = pullRequest.User.AvatarURL
+			}
+
+			// Assignee
+			if pullRequest.Assignee != nil {
+				pullRequestFields["assignee_id"] = pullRequest.Assignee.ID
+				pullRequestFields["assignee_login"] = pullRequest.Assignee.Login
+				pullRequestFields["assignee_name"] = pullRequest.Assignee.Name
+				pullRequestFields["assignee_avatar_url"] = pullRequest.Assignee.AvatarURL
+			}
+
+			// Merger
+			if pullRequest.MergedBy != nil {
+				pullRequestFields["merger_id"] = pullRequest.MergedBy.ID
+				pullRequestFields["merger_login"] = pullRequest.MergedBy.Login
+				pullRequestFields["merger_name"] = pullRequest.MergedBy.Name
+				pullRequestFields["merger_avatar_url"] = pullRequest.MergedBy.AvatarURL
+			}
+
 			pullRequestTags := map[string]string{
 				"pull_request_id": strconv.FormatUint(uint64(*pullRequest.ID), 10),
 			}
@@ -191,6 +215,18 @@ func (g *GitHub) Gather(acc telegraf.Accumulator) error {
 			if err != nil {
 				panic(err)
 			}
+
+			// Author
+			commitFields["author_id"] = commit.Author.ID
+			commitFields["author_login"] = commit.Author.Login
+			commitFields["author_name"] = commit.Author.Name
+			commitFields["author_avatar_url"] = commit.Author.AvatarURL
+
+			// Committer
+			commitFields["committer_id"] = commit.Committer.ID
+			commitFields["committer_login"] = commit.Committer.Login
+			commitFields["committer_name"] = commit.Committer.Name
+			commitFields["committer_avatar_url"] = commit.Committer.AvatarURL
 
 			commitTags := map[string]string{
 				"commit_sha": *commit.SHA,
